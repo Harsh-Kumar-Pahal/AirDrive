@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>storage</title>
+
+
+    <style>
+
+        body{
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .background{
+            background-color: rgba(209, 209, 209, 0.223);
+            width: 300px;
+
+            box-shadow: 1px 1px 5px rgb(128, 127, 127) ;
+            height: 310px;
+            text-align: center;
+            padding: 1%;
+            border-radius: 12px;
+            color: white;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, 0%);
+
+        }
+
+        .navButton{
+            width: 17%;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            border-color: white;
+            background: linear-gradient(0deg, rgb(0, 21, 255), rgb(0, 213, 255));
+            margin-bottom: 150px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 70%;
+            box-shadow:3px 3px 10px rgba(0, 0, 0, 0.974) inset;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Storage</h1>
+    <div>
+        <a href="home.html"> <button class="navButton" style="margin-left: 2%;"> Home  </button>  </a>
+
+        <a href="images.html"> <button class="navButton"> Images  </button>  </a>
+        <a href="docs.html"> <button class="navButton"> Documents</button> </a>
+        <a href="video.html"> <button class="navButton"> Videos </button> </a>
+        <a href="audio.html"> <button class="navButton"> Audio</button> </a>
+    </div>
+    <div class="background" >
+        <div class="storageImage" >
+                    <div id="file-counts"></div>
+                    <div id="file-counts-slider"></div>
+                    <canvas id="file-counts-pie-chart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="home.js"></script>
+</body>
+</html>

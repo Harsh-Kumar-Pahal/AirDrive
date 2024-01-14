@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imges</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script> -->
+
+    <style>
+        body{
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .background{
+            margin-top: 1%;
+            padding: 1%;
+            width: 98%;
+            border-radius: 12px;
+            transform: translate(0%, 0%);
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.593);
+
+
+            
+            
+
+        }
+
+        .imgBack{
+            display: flexbox;
+            width: 96%;
+            padding: 2%;
+            transform: translate(0%, 0%);
+            background-color: rgba(195, 195, 195, 0.962);
+            border-radius: 6px;
+
+        }
+
+        img{
+            border-radius: 8px;
+            display:list-item;
+            width: 80px;
+            height: 80px;
+            margin-top: 1%;
+            object-fit:fill;
+            border-style: 1px solid white;
+
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.593) inset;
+        }
+
+        .navButton{
+            width: 22%;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            border-color: white;
+            background: linear-gradient(0deg, rgb(0, 21, 255), rgb(0, 213, 255));
+            margin-bottom: 4%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 70%;
+            box-shadow:3px 3px 10px rgba(0, 0, 0, 0.974) inset;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #000000;">Your Videos</h1>
+
+    <div>
+        <a href="home.html"> <button class="navButton" style="margin-left: 3%;"> Home </button> </a>
+        <a href="images.html"> <button class="navButton" > Images  </button>  </a>
+        <a href="docs.html"> <button class="navButton" > Documents</button> </a>
+        <a href="audio.html"> <button class="navButton"> Audio</button> </a>
+    </div>
+
+    <div class="background" >
+        <div class="imgBack">
+            <main>
+                <div class="image" style="transform: translateY(-0%);" ></div>
+                
+            </main>
+            
+        </div>
+        
+           
+    </div>
+
+    <div >
+        <div >
+            <div id="file-counts" style="margin-top: -2000%;"></div>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/6.0.2/firebase.js"></script>
+    <script src="video.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const fireAudio = {
+    apiKey: "AIzaSyBMiMbb1Kf0VWF5QtRlqw9ZwUcIT3sTG88",
+    authDomain: "drive-eb504.firebaseapp.com",
+    projectId: "drive-eb504",
+    storageBucket: "drive-eb504.appspot.com",
+    messagingSenderId: "889360710958",
+    appId: "1:889360710958:web:9ef33bb7c361e3829e8ebf",
+    measurementId: "G-PQB335JW6L"
+  };
+
+  firebase.initializeApp(fireAudio);
+
+var img = document.querySelector('.image');
+var fileText = document.querySelector(".fileText"); 
+
+var fileItem;
+var fileName;
+
+const storage = firebase.storage();
+const storageRef = storage.ref();
+
+function getFile(e){
+    fileItem = e.target.files[0];
+    fileName = fileItem.name;
+    fileText.innerHTML = fileName;
+}
+
+function getFileExtension(filename) {
+    const index = filename.indexOf("?");
+    const actualFileName = index !== -1 ? filename.substring(0, index) : filename;
+    return actualFileName.split(".").pop().toLowerCase();
+}
+
+
+function displayAudio(urls) {
+    // Clear the current content
+    img.innerHTML = "";
+
+    // Filter URLs based on audio formats (e.g., .mp3, .ogg, .wav, etc.)
+    const audioFormats = ['.mp3', '.ogg', '.wav', '.aac']; // Add more formats if necessary
+    const filteredUrls = urls.filter(url => {
+        const lowercasedUrl = url.toLowerCase();
+        return audioFormats.some(format => lowercasedUrl.includes(format));
+    });
+
+    // Display filtered audio files
+    filteredUrls.forEach((url) => {
+        let audioElement = document.createElement("audio");
+        audioElement.setAttribute("src", url);
+        audioElement.setAttribute("controls", "true"); // Enable audio controls (play, pause, volume, etc.)
+        audioElement.style.width = "100%"; // Set width as needed
+
+        img.appendChild(audioElement);
+
+
+        // Extract the file name from the URL
+        let decodedUrl = decodeURIComponent(url);
+        let fileName = decodedUrl.split("/").pop().split("?")[0]; // Extracts "mohit.png" from the URL
+
+        // Create a div for displaying file name
+        let fileNameDiv = document.createElement("div");
+
+        fileNameDiv.style.transform = "translateX(0px)";
+        // fileNameDiv.style.transform = "translateY(70px)";
+        fileNameDiv.style.fontSize = "17px"
+        fileNameDiv.style.color = "blue";
+        fileNameDiv.textContent = `${fileName}`;
+
+        // Create a div for displaying file size
+        let fileSizeDiv = document.createElement("div");
+        getFileSize(urls, fileSizeDiv);
+
+        img.appendChild(fileNameDiv);
+        img.appendChild(audioElement);
+
+        // Create and append delete button for each image
+        let deleteButton = createDeleteButton(url);
+        img.appendChild(deleteButton);
+
+    
+    });
+}
+
+
+
+function createDeleteButton(url) {
+    console.log(typeof url);
+    let deleteButton = document.createElement("button");
+    deleteButton.textContent = "delete";
+
+    // Apply inline styles
+    deleteButton.style.marginLeft = "10px";
+    deleteButton.style.marginBottom = "10px";
+    deleteButton.style.background= "linear-gradient(0deg, rgb(108, 10, 18), rgb(255, 16, 28))";    deleteButton.style.color = "#ffffff"; // White text color
+    deleteButton.style.borderRadius = "6px";
+    deleteButton.style.borderColor = "red"; // No border
+    deleteButton.style.padding = "5px 5px"; // Padding
+    deleteButton.style.cursor = "pointer"; // Cursor style
+    deleteButton.style.transform = "translate(-12px,-10px)";
+
+
+
+    deleteButton.addEventListener("click", function () {
+        // Extract the filename from the URL
+        let filename = url
+        // Get the storage reference
+        let storageRef = firebase.storage().refFromURL(url);
+        // Delete the file from Firebase Storage
+        storageRef.delete().then(function () {
+            console.log("File deleted successfully!");
+            // Remove the URL from local storage
+            let storedUrls = JSON.parse(localStorage.getItem("imageUrls")) || [];
+            storedUrls = storedUrls.filter(item => item !== url);
+            localStorage.setItem("imageUrls", JSON.stringify(storedUrls));
+            // Redisplay the images
+            displayAudio(storedUrls);
+            // Update file counts
+            let fileCounts = countFilesByType(storedUrls);
+            displayFileCounts(fileCounts);
+        }).catch(function (error) {
+            console.error("Error deleting file: ", error);
+        });
+    });
+    return deleteButton;
+}
+
+
+
+
+function countFilesByType(storedUrls) {
+    let fileCounts = {};
+
+    storedUrls.forEach(url => {
+        let fileType = getFileExtension(url);
+        if (fileCounts[fileType]) {
+            fileCounts[fileType]++;
+        } else {
+            fileCounts[fileType] = 1;
+        }
+    });
+
+    return fileCounts;
+}
+
+function displayFileCounts(fileCounts) {
+    // Assuming you have a div element with id "file-counts" to display counts
+    let fileCountsDiv = document.getElementById('file-counts');
+    fileCountsDiv.innerHTML = '';
+
+    Object.keys(fileCounts).forEach(fileType => {
+        let countDiv = document.createElement('div');
+        countDiv.textContent = `${fileType}: ${fileCounts[fileType]}`;
+        fileCountsDiv.appendChild(countDiv);
+    });
+}
+
+window.onload = function () {
+    // Get stored image URLs from localStorage
+    const storedUrls = JSON.parse(localStorage.getItem("imageUrls")) || [];
+
+    // Count files by type
+    const fileCounts = countFilesByType(storedUrls);
+
+    // Display file counts
+    displayFileCounts(fileCounts);
+
+    // Display all images
+    displayAudio(storedUrls);
+};
+
+function getFileSize(url, sizeDiv) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("HEAD", url, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                let size = xhr.getResponseHeader("Content-Length");
+                sizeDiv.textContent = `File Size: ${formatBytes(size)}`;
+            } else {
+                sizeDiv.textContent = "File Size: N/A";
+            }
+        }
+    };
+    xhr.send(null);
+}
+
+// Function to format bytes into a human-readable format
+function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+if (annyang) {
+    // Let's define our first command. First the text we expect, and then the function it should call
+    var command = {
+      'home':goHome,
+      'show me my images': showImage,
+      'show me my Documents': showDoc,
+      'show me my Videos': showVideo,
+    };
+
+    function goHome(){
+        window.location.href = "home.html";
+    }
+    function showImage(){
+
+        window.location.href = "images.html";
+    }
+
+    function showDoc(){
+
+        window.location.href = "docs.html";
+    }
+
+    function showVideo(){
+
+        window.location.href = "video.html";
+    }
+  
+    // Add our commands to annyang
+    annyang.addCommands(command);
+  
+    // Start listening. You can call this here, or attach this call to an event, button, etc.
+    annyang.start();
+  }
